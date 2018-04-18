@@ -4,9 +4,9 @@ import { Particle, ParticleStatus } from './Particle';
 const DOENTE = 0xff2222;
 const SAUDAVEL = 0x4caf50;
 
-const WORLD_PARTICLE_COUNT = 1000;
-const WORLD_WIDTH = 800;
-const WORLD_HEIGHT = 600;
+const WORLD_PARTICLE_COUNT = 500;
+const WORLD_WIDTH = window.innerWidth - 10;
+const WORLD_HEIGHT = window.innerHeight - 10;
 
 export class Main
 {
@@ -25,14 +25,14 @@ export class Main
   public constructor () {
     this._renderer = new THREE.WebGLRenderer({ antialias: false });
     this._renderer.setClearColor(0x000, 1);
-    this._renderer.setSize(window.innerWidth, window.innerHeight);
+    this._renderer.setSize(WORLD_WIDTH, WORLD_HEIGHT);
     document.body.appendChild(this._renderer.domElement);
     
     this._camera = new THREE.OrthographicCamera(
-      -10,
-      window.innerWidth,
-      10,
-      -window.innerHeight,
+      0,
+      WORLD_WIDTH,
+      0,
+      -WORLD_HEIGHT,
       1,
       100
     );
@@ -70,9 +70,10 @@ export class Main
   }
   
   createBound(width, height) {
-    let minX = 0, maxX = width, minY = 0, maxY = -height;
+    let lineWidth = 4;
+    let minX = 1, maxX = width - lineWidth/2, minY = -1, maxY = -height + lineWidth/2;
 
-    let material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+    let material = new THREE.LineBasicMaterial({ color: 0x0000ff, linewidth: lineWidth });
     let geometry = new THREE.Geometry();
 
     geometry.vertices.push(
