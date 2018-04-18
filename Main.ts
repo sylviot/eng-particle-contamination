@@ -4,7 +4,7 @@ import { Particle, ParticleStatus } from './Particle';
 const DOENTE = 0xff2222;
 const SAUDAVEL = 0x4caf50;
 
-const WORLD_PARTICLE_COUNT = 500;
+const WORLD_PARTICLE_COUNT = 1000;
 const WORLD_WIDTH = 800;
 const WORLD_HEIGHT = 600;
 
@@ -15,7 +15,7 @@ export class Main
   private _renderer: THREE.WebGLRenderer;
   private _scene: THREE.Scene;
 
-  private _chart: any;
+  private _score: any;
   private _particles: any;
   private _saudavel: any;
   private _doente: any;
@@ -23,7 +23,7 @@ export class Main
   private _time: number;
 
   public constructor () {
-    this._renderer = new THREE.WebGLRenderer({ antialias: true });
+    this._renderer = new THREE.WebGLRenderer({ antialias: false });
     this._renderer.setClearColor(0x000, 1);
     this._renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this._renderer.domElement);
@@ -42,13 +42,17 @@ export class Main
     
     this._clock = new THREE.Clock();
     this._scene = new THREE.Scene();
-    this._chart = [];
     this._time = -1;
     
     this.startSimulation(WORLD_WIDTH, WORLD_HEIGHT, WORLD_PARTICLE_COUNT);
   }
   
   startSimulation(width, height, length) {
+    while(this._scene.children.length) {
+      this._scene.remove(this._scene.children[0]);
+    }
+
+    this._score = document.getElementById('score');
     this.createBound(width, height);
 
 
@@ -134,10 +138,16 @@ export class Main
 
     }
 
+    this._score.innerHTML = particle_sick.length + '/' + this._particles.length;
+
     if (this._time != ~~this._clock.elapsedTime) {
       this._time = ~~this._clock.elapsedTime;
 
-      this._chart.push(particle_sick.length);
+      if (particle_sick.length == WORLD_PARTICLE_COUNT) {
+        this.startSimulation(WORLD_WIDTH, WORLD_HEIGHT, WORLD_PARTICLE_COUNT);
+      }
     }
+
+    
   }
 }

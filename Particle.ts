@@ -2,6 +2,9 @@ import * as THREE from 'three'
 
 const VELOCITY = 1;
 const RADIUS = 5;
+const GEOMETRY = new THREE.CircleGeometry(RADIUS);
+const MATERIAL_SICK = new THREE.MeshBasicMaterial({ color: 0xff2222 });
+const MATERIAL_HEALTHY = new THREE.MeshBasicMaterial({ color: 0x4caf50 });
 
 export enum ParticleStatus {
   SICK = 0xff2222,
@@ -10,7 +13,7 @@ export enum ParticleStatus {
 
 export class Particle
 {
-  private _geometry: THREE.CircleBufferGeometry;
+  private _geometry: THREE.Geometry;
   private _material: THREE.Material;
   private _mesh: THREE.Mesh;
   
@@ -19,7 +22,7 @@ export class Particle
   private _vectorX: number;
   private _vectorY: number;
   private _velocity: number;
-  private _status: string;
+  private _status: ParticleStatus;
 
   constructor (x, y, status) {
     this._angle = Math.random() * THREE.Math.degToRad(360) + 0.1;
@@ -28,7 +31,7 @@ export class Particle
     this._vectorX = Math.cos(this._angle) * this._velocity;
     this._vectorY = Math.sin(this._angle) * this._velocity;
 
-    this._geometry = new THREE.CircleBufferGeometry(this._radius, 32);
+    this._geometry = GEOMETRY || new THREE.CircleGeometry(this._radius);
     this._mesh = new THREE.Mesh(this._geometry, this._material);
     
     this.changeStatus(status);
@@ -66,7 +69,7 @@ export class Particle
     this._mesh.position.z = 2;
   }
   changeColor() {
-    this._mesh.material = new THREE.MeshBasicMaterial({ color: this._status });
+    this._mesh.material = (this._status == ParticleStatus.SICK) ? MATERIAL_SICK : MATERIAL_HEALTHY;
   }
   changeStatus(newStatus) {
     this._status = newStatus;
